@@ -54,7 +54,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interseption.cs" />
+    <Compile Include="Intersection.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="PanelDoubleBuffered.cs">
       <SubType>UserControl</SubType>
@@ -68,6 +68,7 @@
     <Compile Include="Rect.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="State.cs" />
+    <Compile Include="Trace.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="Wall.cs" />
     <EmbeddedResource Include="Form1.resx">

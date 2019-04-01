@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,23 @@ namespace Balls
             return new Line(A, B, C, x1, y1, x2, y2);
         }
 
+        public Point getStart()
+        {
+            return new Point(x1, y1);
+        }
+
+        public Point getEnd()
+        {
+            return new Point(x2, y2);
+        }
+
+        public double getLength()
+        {
+            double dx = x2 - x1;
+            double dy = y2 - y1;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is Line)
@@ -65,6 +83,11 @@ namespace Balls
         public bool Equals(Line l)
         {
             return l.x1 == x1 && l.y1 == y1 && l.x2 == x2 && l.y2 == y2;
+        }
+
+        public void render(Graphics g, Pen pen)
+        {
+            g.DrawLine(pen, (float)x1, (float)y1, (float)x2, (float)y2);
         }
     }
 }

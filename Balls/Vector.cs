@@ -53,7 +53,7 @@ namespace Balls
 
         public Vector add(double dx, double dy)
         {
-            setCoords(x + dx, y + dy);
+            setStart(x + dx, y + dy);
 
             return this;
         }
@@ -70,7 +70,7 @@ namespace Balls
 
         public Vector next(double coeff = 1)
         {
-            return setCoords(updateEnd(coeff).getEnd());
+            return setStart(updateEnd(coeff).getEnd());
         }
 
         public Vector updateDeltas()
@@ -129,12 +129,12 @@ namespace Balls
             return setAngle(angle + delta);
         }
 
-        public Vector setCoords(Point p)
+        public Vector setStart(Point p)
         {
-            return this.setCoords(p.x, p.y);
+            return setStart(p.x, p.y);
         }
 
-        public Vector setCoords(double x, double y)
+        public Vector setStart(double x, double y)
         {
             this.y = y;
             this.x = x;

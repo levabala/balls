@@ -25,7 +25,7 @@ namespace Balls
         public Rect getMoveTrace(Vector v)
         {
             v = v.clone();
-            v.setCoords(x, y);
+            v.setStart(x, y);
 
             Point startSideP1 = 
                 v.clone()

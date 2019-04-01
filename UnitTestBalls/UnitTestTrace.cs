@@ -10,13 +10,18 @@ namespace UnitTestBalls
         [TestMethod]
         public void TraceTest1()
         {
-            Circle c = new Circle(2, 2, 1);
-            Vector moveV = new Vector(0, 5);
-            Rect trace = c.getMoveTrace(moveV);
-            Rect roundedTrace = trace.processWith((p) => new Point(Math.Round(p.x, 3), Math.Round(p.y, 3)));
+            Line l = new Line(0, 6, 5, 6);
+            Ball b = new Ball(
+                new Vector(2, 1, 0.5, 2),
+                1
+            );
 
-            Rect expectedTrace = new Rect(new Point(1, 2), new Point(3, 2), new Point(1, 7), new Point(3, 7));
-            Assert.AreEqual(roundedTrace, expectedTrace);
+            b.updateTrace();
+
+            Point interP = new Point();
+            b.trace.checkCollision(l, b.moment.getStart(), ref interP);
+
+            Assert.AreEqual(interP, new Point(3.25, 6));
         }
     }
 }

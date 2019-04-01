@@ -11,6 +11,7 @@ namespace Balls
         public Vector moment;
         public Vector acc = new Vector(0, 0);
         public Circle frame;
+        public Trace trace;
         public double actualTime = 0;
 
         public Ball(Vector moment, double radius)
@@ -18,6 +19,7 @@ namespace Balls
             this.moment = moment;
             frame = new Circle(moment.x, moment.y, radius);
 
+            trace = new Trace(this);
         }
 
         public Ball(Vector moment, Vector acc, double radius) : this(moment, radius)
@@ -36,6 +38,8 @@ namespace Balls
             this.acc = acc;
             this.frame = frame;
             this.actualTime = actualTime;
+
+            trace = new Trace(this);
         }
 
         public void setAcc(Vector acc)
@@ -86,6 +90,12 @@ namespace Balls
             moment.angle = Vector.normalizeAngle(moment.angle);
         }
 
+        public Ball updateTrace()
+        {
+            trace = new Trace(this);
+            return this;
+        }
+
         public Ball clone()
         {
             return new Ball(moment.clone(), acc.clone(), frame.clone(), actualTime);
@@ -109,7 +119,7 @@ namespace Balls
 
         public Ball updateCoords(double x, double y)
         {
-            moment.setCoords(x, y);
+            moment.setStart(x, y);
 
             frame.x = x;
             frame.y = y;

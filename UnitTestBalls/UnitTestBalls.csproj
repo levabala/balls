@@ -49,6 +49,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnitTestLine.cs" />
     <Compile Include="UnitTestRoom.cs" />
     <Compile Include="UnitTestTrace.cs" />
     <Compile Include="UnitTestInterseption.cs" />

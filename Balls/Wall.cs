@@ -10,6 +10,7 @@ namespace Balls
     {
         public double x1, x2, y1, y2;
         public Line l;
+        private Vector normal;
         private double? length;
 
         public Wall(double x1, double y1, double x2, double y2)
@@ -47,10 +48,24 @@ namespace Balls
             return actualWidth;
         }
 
+        public Vector updateNormal()
+        {
+            normal = new Vector(l).rotate(Math.PI / 2);
+            return normal;
+        }
+
         public double Length {
             get
             {
                 return length ?? updateWidth();
+            }
+        }
+
+        public Vector Normal
+        {
+            get
+            {
+                return normal ?? updateNormal();
             }
         }
     }

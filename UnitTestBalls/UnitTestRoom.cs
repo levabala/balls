@@ -15,7 +15,7 @@ namespace UnitTestBalls
             List<Ball> balls = new List<Ball>() { new Ball(new Vector(3, 2, 1, 1), 1) };
             List<Wall> walls = new List<Wall>() { new Wall(3, 6, 8, 6) };
 
-            State s1 = new State(balls, walls, 1);
+            State s1 = new State(balls, walls, 1, 0);
             Ball ballBefore = s1.balls.First();
 
             State s2 = s1.calcNextState();
@@ -28,8 +28,8 @@ namespace UnitTestBalls
 
             // assert first state
             Assert.AreEqual(ballBefore.moment.getStart(), new Point(3, 2));
-            Assert.AreEqual(ballBefore.moment.dx, 1);
-            Assert.AreEqual(ballBefore.moment.dy, 1);
+            Assert.AreEqual(ballBefore.moment.dx, 1, 0.0001);
+            Assert.AreEqual(ballBefore.moment.dy, 1, 0.0001);
             Assert.AreEqual(s1.startTime, 1);
 
             // assert second state

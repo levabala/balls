@@ -25,41 +25,34 @@ namespace Balls
         {
             panelDraw.Paint += PanelDraw_Paint;
             
-            long lastTime = stopWatch.ElapsedMilliseconds;
-
-            Timer t = new Timer();
-            t.Interval = 16;
-            t.Tick += (s, a) =>
-            {
-                
-                panelDraw.Invalidate();
-
-                long currentTime = stopWatch.ElapsedMilliseconds;
-                long delta = currentTime - lastTime;                
-
-                lastTime = currentTime;
-            };
-
-            t.Start();
-            stopWatch.Start();
+            Random rnd = new Random();
 
             room = new Room(
                 new State(
-                    new List<Ball>()
-                    {
-                        new Ball(new Vector(50, 50, 0, 210), 15),
-                        new Ball(new Vector(50, 50, 0, 220), 15),
-                        new Ball(new Vector(50, 50, 0, 230), 15),
-                        new Ball(new Vector(50, 50, 0, 240), 15),
-                        new Ball(new Vector(50, 50, 100, 400), 15),
-                        new Ball(new Vector(50, 150, 400, 100), 15),
-                        new Ball(new Vector(450, 150, -400, 200), 15),
-                        new Ball(new Vector(250, 350, -200, -100), 15),
-                        new Ball(new Vector(250, 350, 100, -400), 15),
-                        new Ball(new Vector(50, 50, 200, 1), 15),
-                        new Ball(new Vector(50, 50, 100, 200), 5),
-                        new Ball(new Vector(40, 30, 100, 70), 35),
-                    },
+                    new List<Ball>(
+                    new Ball[13].Select(
+                        b => new Ball(
+                            new Vector(
+                                50, 50,
+                                rnd.Next(-50, 50),
+                                rnd.Next(-50, 50)
+                            ),
+                            rnd.Next(10, 30)
+                        )
+                    )
+                    ),
+                    //)
+                    //{
+                    //    new Ball(
+                    //        new Vector(
+                    //            100, 200,
+                    //            150,
+                    //            150
+                    //        ),
+                    //        15
+                    //    )
+                    //},
+
                     new List<Wall>()
                     {
                         new Wall(0, 0, 700, 0),
@@ -67,14 +60,49 @@ namespace Balls
                         new Wall(700, 500, 0, 500),
                         new Wall(0, 500, 0, 0),
 
-                        //new Wall(100, 180, 400, 350),
-                        //new Wall(100, 450, 500, 460),
-                        //new Wall(310, 10, 510, 410),
+                        new Wall(100, 180, 400, 350),
+                        new Wall(100, 650, 610, 460),
+                        new Wall(310, 10, 510, 410),
+                        new Wall(110, 110, 110, 410),
+                        new Wall(210, 110, 100, 410),
                     }, 
                     stopWatch.ElapsedMilliseconds,
+                    0,
                     true
                 )
             );
+
+            room.calcMultipleStates(100);
+
+            long lastTime = stopWatch.ElapsedMilliseconds;
+
+            Timer t = new Timer();
+            t.Interval = 4;
+            t.Tick += (s, a) =>
+            {
+
+                panelDraw.Invalidate();
+
+                long currentTime = stopWatch.ElapsedMilliseconds;
+                long delta = currentTime - lastTime;
+
+                lastTime = currentTime;
+            };
+
+            t.Start();
+            stopWatch.Start();
+
+
+
+            Timer t2 = new Timer();
+            t2.Interval = 300;
+            t2.Tick += (s, a) =>
+            {
+
+                Text = room.statesStack.Count.ToString();
+            };
+
+            t2.Start();
         }
 
         private void PanelDraw_Paint(object sender, PaintEventArgs e)
