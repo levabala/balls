@@ -34,28 +34,28 @@ namespace UnitTestBalls
             Assert.IsFalse(intersepted);
         }
 
-        [TestMethod]
-        public void Line2CircleTest1()
-        {
-            Line l1 = new Line(1, 1, 5, 3);
-            Circle c1 = new Circle(8, 2, 1);
+        //[TestMethod]
+        //public void Line2CircleTest1()
+        //{
+        //    Line l1 = new Line(1, 1, 5, 3);
+        //    Circle c1 = new Circle(8, 2, 1);
 
-            Point interP = new Point();
-            bool intersepted = Intersection.intersect(l1, c1, ref interP);
+        //    Point interP = new Point();
+        //    bool intersepted = Intersection.intersect(l1, c1, ref interP);
 
-            Assert.IsFalse(intersepted);
-        }
+        //    Assert.IsFalse(intersepted);
+        //}
 
-        [TestMethod]
-        public void Line2CircleTest2()
-        {
-            Line l1 = new Line(1, 1, 5, 3);
-            Circle c1 = new Circle(4, 2, 2);
+        //[TestMethod]
+        //public void Line2CircleTest2()
+        //{
+        //    Line l1 = new Line(1, 1, 5, 3);
+        //    Circle c1 = new Circle(4, 2, 2);
 
-            Point interP = new Point();
-            bool intersepted = Intersection.intersect(l1, c1, ref interP);
+        //    Point interP = new Point();
+        //    bool intersepted = Intersection.intersect(l1, c1, ref interP);
 
-            Assert.IsTrue(intersepted);
-        }
+        //    Assert.IsTrue(intersepted);
+        //}
     }
 }

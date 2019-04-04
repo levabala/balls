@@ -40,17 +40,82 @@ namespace Balls
                 Trace t = ball.updateTrace().trace;
                 Point start = ball.moment.getStart();
 
-                supportLines.AddRange(t.lines);
+                //supportLines.AddRange(t.lines);
+                supportLines.Add(t.leftLine);
 
                 IEnumerable<Tuple<double, Point, Wall>> wallsWithIntersection =
                     walls
                     .Select(wall =>
                     {
+                        double timeLeftToIntersect;
                         Point interP = new Point();
-                        bool intersected = t.checkCollision(wall.l, ball.moment.getStart(), ref interP);
+                        Collision collision = t.checkCollision(wall.l, ball.moment.getStart(), ref interP);
 
-                        if (intersected)
-                            return new Tuple<double, Point, Wall>(start.dist(interP) / ball.moment.length, interP, wall);
+                        switch (collision)
+                        {
+                            case Collision.NoCollision:
+                                return null;
+
+                            case Collision.FullCollision:
+                                Line perpLine = ball.moment.clone().setAngle(
+                                    new Vector(wall.l)
+                                    .rotate(Math.PI / 2)
+                                    .angle
+                                ).getLine();
+
+                                Point perpInterP = new Point();
+                                Intersection.intersect(wall.l, perpLine, ref perpInterP);
+
+                                Point virtualInterP = new Point();
+                                Intersection.intersect(ball.moment.getLine(), wall.l, ref virtualInterP);
+
+                                double intersectionDist = ball.moment.getStart().dist(virtualInterP);
+                                double dist = ball.moment.getStart().dist(perpInterP);
+                                double length = (ball.frame.radius * intersectionDist) / dist;
+                                //double length = 0;
+
+                                double distToBounce = intersectionDist - length;
+                                timeLeftToIntersect = distToBounce / ball.moment.length;
+
+                                return new Tuple<double, Point, Wall>(
+                                    timeLeftToIntersect, interP, wall
+                                );
+
+                            case Collision.PartialCollision:
+                                Point wallP1 = wall.l.getStart();
+                                Point wallP2 = wall.l.getEnd();
+                                Point ballPoint = ball.moment.getStart();
+
+                                Point closestWallEnd = 
+                                    ballPoint.dist(wallP1) < ballPoint.dist(wallP2) ? wallP1 : wallP2;
+
+                                Line tangetLine = ball.moment.clone().setStart(closestWallEnd).getLine();
+
+                                Point interP1 = new Point();
+                                Point interP2 = new Point();
+                                Collision anotherCollision = 
+                                    Intersection.intersect(
+                                        tangetLine, 
+                                        ball.frame, 
+                                        ref interP1, 
+                                        ref interP2
+                                    );
+
+                                Point closestInterP;
+                                if (anotherCollision == Collision.PartialCollision)
+                                    closestInterP = interP1;
+                                else
+                                    closestInterP = 
+                                        closestWallEnd.dist(interP1) < closestWallEnd.dist(interP2) ? 
+                                        interP1 : 
+                                        interP2;
+
+                                timeLeftToIntersect = closestInterP.dist(closestWallEnd) / ball.moment.length;
+
+                                return new Tuple<double, Point, Wall>(
+                                    timeLeftToIntersect, interP, wall
+                                );
+                        }
 
                         return null;
                     })
@@ -62,29 +127,10 @@ namespace Balls
                 Tuple<double, Point, Wall> closestWall = wallsWithIntersection.Aggregate(
                     (acc, val) => val.Item1 < acc.Item1 ? val : acc
                 );
-
-                Wall interWall = closestWall.Item3;
-                Line perpLine = ball.moment.clone().setAngle(new Vector(interWall.l).rotate(Math.PI / 2).angle).getLine();
-
-                Point perpInterP = new Point();
-                Intersection.intersect(interWall.l, perpLine, ref perpInterP);
-
-                Point virtualInterP = new Point();
-                Intersection.intersect(ball.moment.getLine(), interWall.l, ref virtualInterP);
-
-                double intersectionDist = ball.moment.getStart().dist(virtualInterP);
-                double dist = ball.moment.getStart().dist(perpInterP);
-                //double length = (ball.frame.radius * intersectionDist) / dist;
-                double length = 0;
-
-                double distToBounce = intersectionDist - length;
-                double timeLeftToIntersect = distToBounce / ball.moment.length;
-
-                if (timeLeftToIntersect <= 0)
-                    return null;
+                
 
                 return new Tuple<double, Point, Wall, Ball>(
-                    timeLeftToIntersect,
+                    closestWall.Item1,
                     closestWall.Item2,
                     closestWall.Item3,
                     ball
@@ -94,20 +140,33 @@ namespace Balls
             if (intersections.Count() == 0)
                 return this;
 
+            const double minDiff = 0.1;
+
             Tuple<double, Point, Wall, Ball> closestIntersection = intersections.Aggregate(
                 (acc, val) => val.Item1 < acc.Item1 ? val : acc
-            );
+            );                        
 
-            double timeToIntersect = Math.Max(closestIntersection.Item1, 0);
+            List<Tuple<double, Point, Wall, Ball>> followingIntersectons = intersections.Where(
+                t => Math.Abs(t.Item1 - closestIntersection.Item1) < minDiff
+            ).ToList();
+
+            double timeToIntersect = Math.Max(closestIntersection.Item1, -minDiff);
             Point pointInter = closestIntersection.Item2;
             Wall wallInter = closestIntersection.Item3;
             Ball ballInter = closestIntersection.Item4;
             
-            newBalls.ForEach(ball => ball.move(timeToIntersect));
+            newBalls.ForEach(ball => ball.move(timeToIntersect));            
 
-            Debug.Print(timeToIntersect.ToString());
+            if (followingIntersectons.Count == 0)
+                Debug.Print("what");
 
-            ballInter.bounce(wallInter);
+            followingIntersectons.ForEach(t => t.Item4.bounce(wallInter));
+            //ballInter.bounce(wallInter);
+            Debug.Print(followingIntersectons.Count.ToString());
+
+            //Debug.Print("---");
+            //Debug.Print(string.Join("\n", intersections.OrderBy(t => t.Item1).Select(t => t.Item1.ToString())));
+
 
             return new State(newBalls, walls, startTime + timeToIntersect, id + 1);
         }

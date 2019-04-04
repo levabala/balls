@@ -65,25 +65,52 @@ namespace Balls
         }
 
         
-        public static bool intersect(Line l, Circle c, ref Point interP)
+        public static Collision intersect(Line l, Circle c, ref Point interP1, ref Point interP2)
         {
-            Vector lineVector = new Vector(l);
+            double sign(double value)
+            {
+                if (value >= 0)
+                    return 1;
+                return -1;
+            }
 
-            Vector perp = lineVector
-                .clone()
-                .setStart(c.x, c.y)
-                .rotate(Math.PI / 2);
-
-            Line l1 = new Line(lineVector);
-            Line l2 = new Line(perp);
+            // normalize
+            l = new Line(l.x1 - c.x, l.y1 - c.y, l.x2 - c.x, l.y2 - c.y);
+            c = new Circle(0, 0, c.radius);
             
-            intersect(l1, l2, ref interP);
 
-            double dx = interP.x - c.x;
-            double dy = interP.y - c.y;
+            double dx = l.x2 - l.x1;
+            double dy = l.y2 - l.y1;
+            double length = Math.Sqrt(dx * dx + (dy * dy));
+            double r = c.radius;
 
-            double dist = Math.Sqrt(dx * dx + dy * dy);
-            return dist <= c.radius;
+            double D = l.x1 * l.y2 - l.x2 * l.y1;
+            double det = Math.Sqrt(r * r * length * length - D * D);
+
+            double leftX = D * dy;
+            double rightX = sign(dy) * dx * det;
+
+            double leftY = -D * dx;
+            double rightY = Math.Abs(dy) * det;
+
+            double x1 = (leftX + rightX) / (r * r);
+            double x2 = (leftX - rightX) / (r * r);
+
+            double y1 = (leftY + rightY) / (r * r);
+            double y2 = (leftY - rightY) / (r * r);
+
+            if (det < 0)
+                return Collision.NoCollision;
+
+            if (det == 0)
+            {
+                interP1 = new Point(x1, y1);
+                return Collision.PartialCollision;
+            }
+
+            interP1 = new Point(x1, y1);
+            interP2 = new Point(x2, y2);
+            return Collision.FullCollision;
         }
 
         public static bool intersect(Point p, Wall w, bool pointOnLine = false, double eps = 0.00001)

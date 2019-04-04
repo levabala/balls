@@ -10,8 +10,9 @@ namespace Balls
     {
         public int statesPast = 0;
         public List<State> statesStack = new List<State>();
-        public bool supportGeometry = false;
-        public bool drawNextState = false;
+        public bool supportGeometry = true;
+        public bool drawNextState = true;
+        public double solveTime;
 
         public Room(State state)
         {
@@ -39,29 +40,32 @@ namespace Balls
 
         public State calcNextState()
         {
-            State newState = statesStack.Last().calcNextState();
+            State lastState = statesStack.Last();
+            State newState = lastState.calcNextState();
+
             statesStack.Add(newState);
+
+            if (lastState.id == newState.id)
+                solveTime = lastState.startTime;
 
             return newState;
         }
 
         public State takeActualState(double time)
         {
-            int index = statesStack.FindIndex((state) => state.startTime > time);
+            if (time >= solveTime)
+                return statesStack.Last();
 
-            if (index == -1)
+            int index = statesStack.FindIndex((state) => state.startTime > time) - 1;
+
+            if (index < 0)
             {
-                State state = statesStack.Last().calcNextState();
-                while (state.startTime < time)
-                    state = state.calcNextState();
-
-                statesStack.Clear();
-                statesStack.Add(state);
-                return state;
+                calcMultipleStates(50);
+                return takeActualState(time);
             }
 
             State actualState = statesStack[index];
-            statesStack = statesStack.Skip(index).ToList();
+            statesStack = statesStack.Skip(index).ToList();           
 
             return actualState;
         }

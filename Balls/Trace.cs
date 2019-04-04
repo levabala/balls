@@ -81,39 +81,43 @@ namespace Balls
             updateFinalLine();
         }
 
-        public bool checkCollision(Line line, Point origin, ref Point interP)
+        public Collision checkCollision(Line line, Point origin, ref Point interP)
         {
-            //List<Point> interPoints = new List<Point>();
-            //bool intersected = lines.Select(l =>
-            //{
-            //    Point localInterP = new Point();
-            //    bool intersection = Intersection.intersect(line, l, ref localInterP, true);
+            Point rightInterPoint = new Point();
+            Point leftInterPoint = new Point();
+            bool intersectedRight = Intersection.intersect(line, rightLine, ref rightInterPoint, true);
+            bool intersectedLeft = Intersection.intersect(line, leftLine, ref leftInterPoint, true);
 
-            //    if (intersection)
-            //        interPoints.Add(localInterP);
-
-            //    return intersection;
-            //}).Any(l => l);
-
-            Point[] localInterPoints = new Point[]
+            if (intersectedRight && intersectedLeft)
             {
-                new Point(),
-                new Point(),
-                new Point(),
-                new Point(),
-            };
+                Point centerInterPoint = new Point();
+                bool intersected3 = Intersection.intersect(
+                    line, 
+                    directionVector.getLine(), 
+                    ref centerInterPoint, 
+                    true
+                );
 
+                interP = centerInterPoint;
 
-            bool intersected1 = Intersection.intersect(line, leftLine, ref localInterPoints[0], true);
-            bool intersected2 = Intersection.intersect(line, rightLine, ref localInterPoints[1], true);
-            bool intersected3 = Intersection.intersect(line, rootLine, ref localInterPoints[2], true);
-            bool intersected4 = Intersection.intersect(line, finalLine, ref localInterPoints[3], true);
+                return Collision.FullCollision;
+            }
 
-            if (!(intersected1 || intersected2 || intersected3 || intersected4))
-                return false;
+            if (!intersectedRight && !intersectedLeft)
+                return Collision.NoCollision;
 
-            interP = localInterPoints.Aggregate((acc, val) => origin.dist(val) < origin.dist(acc) ? val : acc);
-            return true;
+            if (intersectedRight)
+                interP = rightInterPoint;
+            else
+                interP = leftInterPoint;
+
+            return Collision.PartialCollision;
         }
+    }
+
+    public enum Collision {
+        NoCollision,
+        FullCollision,
+        PartialCollision,
     }
 }
