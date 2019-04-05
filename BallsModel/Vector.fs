@@ -46,7 +46,7 @@ type Vector =
         dx = dx;
         dy = dy;
         length = 
-          dx * dx + dy * dy 
+          (dx * dx + dy * dy)
           |> decimal |> float |> sqrt |> decimal 
           |> LanguagePrimitives.DecimalWithMeasure;
         angle = Other.atan2M dy dx;
@@ -84,8 +84,10 @@ type Vector =
         magicSignature, 
         magicSignature2
       ) =     
-      let dx = (x |> decimal |> float |> cos |> decimal) * length
-      let dy = (y |> decimal |> float |> sin |> decimal) * length
+      let coeffX = angle |> decimal |> float |> cos |> decimal
+      let coeffY = angle |> decimal |> float |> sin |> decimal
+      let dx = coeffX * length
+      let dy = coeffY * length
 
       {
         x = x; 
@@ -103,6 +105,20 @@ type Vector =
 
     member this.rotate (angle: decimal<rad>): Vector=
       Vector(this.x, this.y, this.length, this.angle + angle, obj, obj)
+
+    member this.setLength (length: decimal<m>) : Vector =
+      Vector(this.x, this.y, length, this.angle, obj, obj)
+
+    member this.setStart (x: decimal<m>, y: decimal<m>) : Vector =
+      let ddx = x - this.x
+      let ddy = y - this.y
+      Vector(x, y, this.dx, this.dy, this.ex + ddx, this.ey + ddy, this.length, this.angle)
+
+    member this.getStart = 
+      Point(this.x, this.y)
+
+    member this.getEnd = 
+      Point(this.ex, this.ey)
 
     static member angleBetween (v1: Vector) (v2: Vector) : decimal<rad> = 
       let delta1 = v2.angle - v1.angle

@@ -13,6 +13,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tutorial1", "Tutorial1\Tuto
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BallsModelTest", "BallsModelTest\BallsModelTest.fsproj", "{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallsModelDrawer", "BallsModelDrawer\BallsModelDrawer.csproj", "{26EFF3E6-46AE-46DC-A684-EB651B447EBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

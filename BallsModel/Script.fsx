@@ -1,11 +1,16 @@
-﻿// Learn more about F# at http://fsharp.org
-// See the 'F# Tutorial' project for more help.
-
-#load "Measures.fs"
-#load "Library1.fs"
+﻿#load "Measures.fs"
+#load "Point.fs"
+#load "Line.fs"
 #load "Vector.fs"
+#load "Polygone.fs"
 
 open BallsModel
 
-// Define your library scripting code here
-let v = Vector.vector1 1.0<m> 2.0<m> 2.0<m> 1.0<m>
+let points = [|
+  Point(1M<m>, 1M<m>); 
+  Point(3M<m>, 2M<m>); 
+  Point(2M<m>, 5M<m>); 
+  Point(-2M<m>, 7M<m>)
+|]
+
+let poly = Polygone(points)
