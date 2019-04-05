@@ -2,11 +2,11 @@
 
 [<Struct>]
 type Ball =
-  val moment: Vector;
+  val ph: PhysicalBody;
   val frame: Circle;
 
-  new (moment, frame) = 
+  new (moment, mass, frame) = 
     {
-      moment = moment;
+      ph = PhysicalBody(moment, mass)
       frame = frame;
     }

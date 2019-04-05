@@ -1,5 +1,7 @@
 ﻿namespace BallsModel
 
+open System
+
 module private Other = 
   let atan2M (dy: decimal<m>) (dx: decimal<m>) : decimal<rad> = 
       let dxF = dx |> decimal |> float
@@ -114,19 +116,28 @@ type Vector =
       let ddy = y - this.y
       Vector(x, y, this.dx, this.dy, this.ex + ddx, this.ey + ddy, this.length, this.angle)
 
-    member this.getStart = 
+    member this.startPoint = 
       Point(this.x, this.y)
 
-    member this.getEnd = 
+    member this.endPoint = 
       Point(this.ex, this.ey)
 
-    static member angleBetween (v1: Vector) (v2: Vector) : decimal<rad> = 
-      let delta1 = v2.angle - v1.angle
-      let delta2 = v2.angle - v1.angle
+    member this.project (line: Line) = 
 
-      if abs(delta1) < abs(delta2)
-      then delta1
-      else delta2
+
+    static member normalizeAngle (angle: decimal<rad>) : decimal<rad> =
+      let s = sign angle |> float
+      let a = abs(angle) |> decimal |> float
+      let low = 
+        a - (floor (a / Math.PI / 2.0)) * Math.PI * 2.0
+
+      if low > Math.PI 
+      then (low - Math.PI) * s * -1.0
+      else low * s
+      |> decimal |> LanguagePrimitives.DecimalWithMeasure
+
+    static member angleBetween (v1: Vector) (v2: Vector) : decimal<rad> = 
+      v2.angle - v1.angle |> Vector.normalizeAngle
 
     static member angleBetweenPositive (v1: Vector) (v2: Vector) : decimal<rad> = 
       if v1.angle > v2.angle 

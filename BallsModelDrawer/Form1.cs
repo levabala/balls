@@ -11,33 +11,78 @@ using System.Windows.Forms;
 namespace BallsModelDrawer
 {
     public partial class Form1 : Form
-    {        
+    {
+        List<BallsModel.Point> localPoints = new List<BallsModel.Point>(){
+            new BallsModel.Point(1, 1),
+            new BallsModel.Point(3, 2),
+            new BallsModel.Point(2, 5),
+            new BallsModel.Point(5, 10),
+            new BallsModel.Point(-2, 12),
+        };
         BallsModel.Point[] points;
         BallsModel.Polygone poly;
+        bool polyIsEmpty = false;
+        float scale = 1;
+        float translateX = 0;
+        float translateY = 0;
 
         public Form1()
         {
             InitializeComponent();
 
+            rebuildData();
+        }
+
+        private void rebuildData()
+        {                           
             // get model data
-            points = new BallsModel.Point[]{
-                new BallsModel.Point(1, 1),
-                new BallsModel.Point(3, 2),
-                new BallsModel.Point(2, 5),
-                new BallsModel.Point(5, 10),
-                new BallsModel.Point(-2, 12),
+            points = localPoints.ToArray();
 
-            };
-
-            poly = new BallsModel.Polygone(points);
+            if (points.Length == 0)
+                polyIsEmpty = true;
+            else
+            {
+                poly = new BallsModel.Polygone(points);
+                polyIsEmpty = false;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Text = "Click - put point; R - reset";
+
+            DoubleBuffered = true;
             BackColor = Color.White;
 
             Paint += Form1_Paint;
             Resize += Form1_Resize;
+            MouseClick += Form1_MouseClick;
+            KeyDown += Form1_KeyDown;
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.R:
+                    localPoints.Clear();
+                    rebuildData();
+                    Invalidate();
+                    break;
+            }
+        }
+
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            localPoints.Add(
+                new BallsModel.Point(
+                    (decimal)((e.X - translateX) / scale), 
+                    (decimal)((e.Y - translateY) / scale)
+                )
+            );
+            rebuildData();
+
+            Invalidate();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -49,15 +94,21 @@ namespace BallsModelDrawer
         {
             Graphics g = e.Graphics;
 
+            scale = ClientSize.Width / 60f;
+            translateX = ClientSize.Width / 2;
+            translateY = ClientSize.Height / 2;
+
             // scale to 10 and translate to the center
-            float scale = ClientSize.Width / 60f;
-            g.TranslateTransform(ClientSize.Width / 2, ClientSize.Height / 2);
+            g.TranslateTransform(translateX, translateY);
             g.ScaleTransform(scale, scale);
 
             // draw axises
             Pen axisPen = new Pen(Color.Black, 0.1f);
             g.DrawLine(axisPen, -ClientSize.Width, 0, ClientSize.Width, 0);
-            g.DrawLine(axisPen, 0, -ClientSize.Height, 0, ClientSize.Height);            
+            g.DrawLine(axisPen, 0, -ClientSize.Height, 0, ClientSize.Height);
+
+            if (polyIsEmpty)
+                return;
 
             // draw lines
             Pen linePen = new Pen(Color.LightPink, 0.3f);

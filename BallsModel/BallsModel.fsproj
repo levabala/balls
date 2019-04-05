@@ -50,6 +50,7 @@
     <Compile Include="Point.fs" />
     <Compile Include="Line.fs" />
     <Compile Include="Vector.fs" />
+    <Compile Include="PhysicalBody.fs" />
     <Compile Include="Circle.fs" />
     <Compile Include="Ball.fs" />
     <Compile Include="Polygone.fs" />
