@@ -122,7 +122,7 @@ type Vector =
     member this.endPoint = 
       Point(this.ex, this.ey)
 
-    member this.project (line: Line) = 
+    // member this.project (line: Line) = 
 
 
     static member normalizeAngle (angle: decimal<rad>) : decimal<rad> =

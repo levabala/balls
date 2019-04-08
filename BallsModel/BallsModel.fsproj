@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Measures.fs" />
-    <Compile Include="Library1.fs" />
     <Compile Include="Point.fs" />
     <Compile Include="Line.fs" />
     <Compile Include="Vector.fs" />

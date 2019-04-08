@@ -140,8 +140,8 @@ namespace BallsModelDrawer
             poly.normals.ToList().ForEach(
                 normal =>
                 {
-                    BallsModel.Point vStart = normal.getStart;
-                    BallsModel.Point vEnd = normal.getEnd;
+                    BallsModel.Point vStart = normal.startPoint;
+                    BallsModel.Point vEnd = normal.endPoint;
 
                     g.DrawLine(
                         normalPen,
