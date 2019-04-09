@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace BallsModelDrawer
 {
     public partial class Form1 : Form
-    {
+    {                
         List<BallsModel.Point> localPoints = new List<BallsModel.Point>(){
             new BallsModel.Point(1, 1),
             new BallsModel.Point(3, 2),
@@ -140,8 +140,8 @@ namespace BallsModelDrawer
             poly.normals.ToList().ForEach(
                 normal =>
                 {
-                    BallsModel.Point vStart = normal.startPoint;
-                    BallsModel.Point vEnd = normal.endPoint;
+                    BallsModel.Point vStart = normal.StartPoint;
+                    BallsModel.Point vEnd = normal.EndPoint;
 
                     g.DrawLine(
                         normalPen,

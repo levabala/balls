@@ -9,141 +9,138 @@ module private Other =
 
       atan2 dyF dxF |> decimal |> LanguagePrimitives.DecimalWithMeasure
 
+[<Struct>]
 type Vector = 
-  struct
-    val x: decimal<m>; 
-    val y: decimal<m>;
-    val ex: decimal<m>; 
-    val ey: decimal<m>;
-    val dx: decimal<m>; 
-    val dy: decimal<m>;
-    val length: decimal<m>;
-    val angle: decimal<rad>;
+  val x: decimal<m>; 
+  val y: decimal<m>;
+  val ex: decimal<m>; 
+  val ey: decimal<m>;
+  val dx: decimal<m>; 
+  val dy: decimal<m>;
+  val length: decimal<m>;
+  val angle: decimal<rad>;
+  
+  new (x: decimal<m>, y: decimal<m>, dx: decimal<m>, dy: decimal<m>) = 
+    {
+      x = x; 
+      y = y; 
+      ex = x + dx;
+      ey = y + dy;
+      dx = dx;
+      dy = dy;
+      length = 
+        dx * dx + dy * dy 
+        |> decimal |> float |> sqrt |> decimal 
+        |> LanguagePrimitives.DecimalWithMeasure;
 
-    new (x: decimal<m>, y: decimal<m>, dx: decimal<m>, dy: decimal<m>) = 
-      {
-        x = x; 
-        y = y; 
-        ex = x + dx;
-        ey = y + dy;
-        dx = dx;
-        dy = dy;
-        length = 
-          dx * dx + dy * dy 
-          |> decimal |> float |> sqrt |> decimal 
-          |> LanguagePrimitives.DecimalWithMeasure;
+      angle = Other.atan2M dy dx;
+    }
 
-        angle = Other.atan2M dy dx;
-      }
+  new (x: decimal<m>, y: decimal<m>, ex: decimal<m>, ey: decimal<m>, magicSignature) =     
+    let dx = ex - x;
+    let dy = ey - y;
 
-    new (x: decimal<m>, y: decimal<m>, ex: decimal<m>, ey: decimal<m>, magicSignature) =     
-      let dx = ex - x;
-      let dy = ey - y;
+    {
+      x = x; 
+      y = y; 
+      ex = ex;
+      ey = ey;
+      dx = dx;
+      dy = dy;
+      length = 
+        (dx * dx + dy * dy)
+        |> decimal |> float |> sqrt |> decimal 
+        |> LanguagePrimitives.DecimalWithMeasure;
+      angle = Other.atan2M dy dx;
+    }
 
-      {
-        x = x; 
-        y = y; 
-        ex = ex;
-        ey = ey;
-        dx = dx;
-        dy = dy;
-        length = 
-          (dx * dx + dy * dy)
-          |> decimal |> float |> sqrt |> decimal 
-          |> LanguagePrimitives.DecimalWithMeasure;
-        angle = Other.atan2M dy dx;
-      }
+  new (l: Line) = Vector(l.x1, l.y1, l.x2, l.y2, obj)
+  
+  new (
+      x: decimal<m>,        
+      y: decimal<m>, 
+      dx: decimal<m>,
+      dy: decimal<m>,
+      ex: decimal<m>,
+      ey: decimal<m>,
+      length: decimal<m>, 
+      angle: decimal<rad>
+    )
+    =           
+    {
+      x = x; 
+      y = y; 
+      ex = ex;
+      ey = ey;
+      dx = dx;
+      dy = dy;
+      length = length;
+      angle = angle;
+    }
 
-    new (l: Line) = Vector(l.x1, l.y1, l.x2, l.y2, obj)
-    
-    new (
-        x: decimal<m>,        
-        y: decimal<m>, 
-        dx: decimal<m>,
-        dy: decimal<m>,
-        ex: decimal<m>,
-        ey: decimal<m>,
-        length: decimal<m>, 
-        angle: decimal<rad>
-      )
-     =           
-      {
-        x = x; 
-        y = y; 
-        ex = ex;
-        ey = ey;
-        dx = dx;
-        dy = dy;
-        length = length;
-        angle = angle;
-      }
+  new (
+      x: decimal<m>, 
+      y: decimal<m>, 
+      length: decimal<m>, 
+      angle: decimal<rad>, 
+      magicSignature, 
+      magicSignature2
+    ) =     
+    let coeffX = angle |> decimal |> float |> cos |> decimal
+    let coeffY = angle |> decimal |> float |> sin |> decimal
+    let dx = coeffX * length
+    let dy = coeffY * length
 
-    new (
-        x: decimal<m>, 
-        y: decimal<m>, 
-        length: decimal<m>, 
-        angle: decimal<rad>, 
-        magicSignature, 
-        magicSignature2
-      ) =     
-      let coeffX = angle |> decimal |> float |> cos |> decimal
-      let coeffY = angle |> decimal |> float |> sin |> decimal
-      let dx = coeffX * length
-      let dy = coeffY * length
+    {
+      x = x; 
+      y = y; 
+      ex = x + dx;
+      ey = y + dy;
+      dx = dx;
+      dy = dy;
+      length = length;
+      angle = angle;
+    }
 
-      {
-        x = x; 
-        y = y; 
-        ex = x + dx;
-        ey = y + dy;
-        dx = dx;
-        dy = dy;
-        length = length;
-        angle = angle;
-      }
+  member this.clone : Vector = 
+    Vector(this.x, this.y, this.dx, this.dy, this.ex, this.ey, this.length, this.angle)
 
-    member this.clone : Vector = 
-      Vector(this.x, this.y, this.dx, this.dy, this.ex, this.ey, this.length, this.angle)
+  member this.rotate (angle: decimal<rad>): Vector=
+    Vector(this.x, this.y, this.length, this.angle + angle, obj, obj)
 
-    member this.rotate (angle: decimal<rad>): Vector=
-      Vector(this.x, this.y, this.length, this.angle + angle, obj, obj)
+  member this.setLength (length: decimal<m>) : Vector =
+    Vector(this.x, this.y, length, this.angle, obj, obj)
 
-    member this.setLength (length: decimal<m>) : Vector =
-      Vector(this.x, this.y, length, this.angle, obj, obj)
+  member this.setStart (x: decimal<m>, y: decimal<m>) : Vector =
+    let ddx = x - this.x
+    let ddy = y - this.y
+    Vector(x, y, this.dx, this.dy, this.ex + ddx, this.ey + ddy, this.length, this.angle)
 
-    member this.setStart (x: decimal<m>, y: decimal<m>) : Vector =
-      let ddx = x - this.x
-      let ddy = y - this.y
-      Vector(x, y, this.dx, this.dy, this.ex + ddx, this.ey + ddy, this.length, this.angle)
+  member this.startPoint = 
+    Point(this.x, this.y)
 
-    member this.startPoint = 
-      Point(this.x, this.y)
+  member this.endPoint = 
+    Point(this.ex, this.ey)
 
-    member this.endPoint = 
-      Point(this.ex, this.ey)
-
-    // member this.project (line: Line) = 
+  // member this.project (line: Line) = 
 
 
-    static member normalizeAngle (angle: decimal<rad>) : decimal<rad> =
-      let s = sign angle |> float
-      let a = abs(angle) |> decimal |> float
-      let low = 
-        a - (floor (a / Math.PI / 2.0)) * Math.PI * 2.0
+  static member normalizeAngle (angle: decimal<rad>) : decimal<rad> =
+    let s = sign angle |> float
+    let a = abs(angle) |> decimal |> float
+    let low = 
+      a - (floor (a / Math.PI / 2.0)) * Math.PI * 2.0
 
-      if low > Math.PI 
-      then (low - Math.PI) * s * -1.0
-      else low * s
-      |> decimal |> LanguagePrimitives.DecimalWithMeasure
+    if low > Math.PI 
+    then (low - Math.PI) * s * -1.0
+    else low * s
+    |> decimal |> LanguagePrimitives.DecimalWithMeasure
 
-    static member angleBetween (v1: Vector) (v2: Vector) : decimal<rad> = 
-      v2.angle - v1.angle |> Vector.normalizeAngle
+  static member angleBetween (v1: Vector) (v2: Vector) : decimal<rad> = 
+    v2.angle - v1.angle |> Vector.normalizeAngle
 
-    static member angleBetweenPositive (v1: Vector) (v2: Vector) : decimal<rad> = 
-      if v1.angle > v2.angle 
-      then v1.angle - v2.angle 
-      else v2.angle - v1.angle
-    
-  end
-
+  static member angleBetweenPositive (v1: Vector) (v2: Vector) : decimal<rad> = 
+    if v1.angle > v2.angle 
+    then v1.angle - v2.angle 
+    else v2.angle - v1.angle
 

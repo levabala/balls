@@ -2,7 +2,11 @@
 #load "Point.fs"
 #load "Line.fs"
 #load "Vector.fs"
+#load "PhysicalBody.fs"
+#load "Circle.fs"
+#load "Ball.fs"
 #load "Polygone.fs"
+#load "Wall.fs"
 
 open BallsModel
 
