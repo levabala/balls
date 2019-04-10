@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestBalls", "UnitTestBa
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tutorial1", "Tutorial1\Tutorial1.fsproj", "{58DB02EE-BF91-45EF-8DE6-4C410F05CE1D}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BallsModelTest", "BallsModelTest\BallsModelTest.fsproj", "{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallsModelDrawer", "BallsModelDrawer\BallsModelDrawer.csproj", "{26EFF3E6-46AE-46DC-A684-EB651B447EBB}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BallsModel", "D:\Projects\BallsModel\BallsModel\BallsModel.fsproj", "{AB19A21F-AA0B-4FB2-8794-76A7DB9BCDAC}"
@@ -33,10 +31,6 @@ Global
 		{58DB02EE-BF91-45EF-8DE6-4C410F05CE1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58DB02EE-BF91-45EF-8DE6-4C410F05CE1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58DB02EE-BF91-45EF-8DE6-4C410F05CE1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D69F4363-27EB-4B6A-8401-07F4EAA6BA3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26EFF3E6-46AE-46DC-A684-EB651B447EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
