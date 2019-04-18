@@ -40,6 +40,7 @@
             this.panelDraw.Name = "panelDraw";
             this.panelDraw.Size = new System.Drawing.Size(1126, 800);
             this.panelDraw.TabIndex = 0;
+            this.panelDraw.Load += new System.EventHandler(this.panelDraw_Load);
             // 
             // Form1
             // 

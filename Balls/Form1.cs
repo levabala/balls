@@ -132,5 +132,10 @@ namespace Balls
         {
             room.render(e.Graphics, stopWatch.ElapsedMilliseconds);
         }
+
+        private void panelDraw_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
