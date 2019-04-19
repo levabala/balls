@@ -12,10 +12,12 @@ namespace BallsModelDrawer
         public BallsModel.State currentState;
         public List<BallsModel.State> statesBuffer = new List<BallsModel.State>();
         public bool solved = false;
+        public double bounceGate;
        
-        public Room(BallsModel.State initialState)
+        public Room(BallsModel.State initialState, double bounceGate = 0.1)
         {
             currentState = initialState;
+            this.bounceGate = bounceGate;
         }
 
         public BallsModel.State calcNextState()
@@ -23,7 +25,8 @@ namespace BallsModelDrawer
             BallsModel.State latestState = 
                 statesBuffer.Count > 0 ? statesBuffer.Last() : currentState;
 
-            FSharpOption <BallsModel.State> state = latestState.nextState(FSharpOption<double>.None);
+            FSharpOption <BallsModel.State> state = 
+                latestState.nextState(bounceGate);
             solved = FSharpOption<BallsModel.State>.get_IsNone(state);
 
             if (!solved)

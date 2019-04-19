@@ -20,17 +20,24 @@ namespace BallsModelDrawer
         float scaleFinal = 1;
         float scaleVectors = 10;
         float translateX = 30;
-        float translateY = 30;      
-        bool lightMode = true;
+        float translateY = 30;
+        bool showCenter = false;
+        bool showFrame = false;
+        bool showVector = true;
 
         const double boxWidth = 100;
         const double boxHeight = 60;
-        const int ballsCount = 2500;
+        const int ballsCount = 3000;
+
+        double bounceGate = 0.1;
+        double bounceScalePower = 3.0;
 
         double lastSimTime = 0;
         double lastRealTime = 0;
+
         double timeScale = 0.5;
         double timeScalePower = 3;
+
         List<double> cpuUsageBuffer = new List<double>();
         List<double> frameDurationBuffer = new List<double>();
 
@@ -58,6 +65,7 @@ namespace BallsModelDrawer
             BackColor = Color.White;
             KeyPreview = true;
 
+            trackBarBounceGate.Value = (int)(Math.Pow(bounceGate, 1.0 / bounceScalePower) * 1000);
             trackBarTimeScale.Value = (int)(Math.Pow(timeScale, 1.0 / timeScalePower) * 100);
             labelTimeScale.Text = string.Format("TimeScale: x{0}", Math.Round(timeScale, 2));
 
@@ -66,12 +74,42 @@ namespace BallsModelDrawer
             MouseDown += Form1_MouseDown;
             KeyDown += Form1_KeyDown;
 
-            checkBoxLightMode.Checked = lightMode;
-            checkBoxLightMode.CheckedChanged += CheckBoxLightMode_CheckedChanged;
+            checkBoxShowCenter.Checked = showCenter;
+            checkBoxShowCenter.CheckedChanged += CheckBoxShowCenter_CheckedChanged; ;
+
+            checkBoxShowFrame.Checked = showFrame;
+            checkBoxShowFrame.CheckedChanged += CheckBoxShowFrame_CheckedChanged;
+
+            checkBoxShowVector.Checked = showVector;
+            checkBoxShowVector.CheckedChanged += CheckBoxShowVector_CheckedChanged;
 
             trackBarTimeScale.ValueChanged += TrackBarTimeScale_ValueChanged;
+            trackBarBounceGate.ValueChanged += TrackBarBounceGate_ValueChanged;
 
             start();
+        }
+
+        private void TrackBarBounceGate_ValueChanged(object sender, EventArgs e)
+        {
+            bounceGate = Math.Pow((double)trackBarBounceGate.Value / 1000, bounceScalePower);
+            room.bounceGate = bounceGate;
+
+            labelBounceGate.Text = string.Format("BounceGate: {0}s", Math.Round(bounceGate, 3));
+        }
+
+        private void CheckBoxShowCenter_CheckedChanged(object sender, EventArgs e)
+        {
+            showCenter = checkBoxShowCenter.Checked;
+        }
+
+        private void CheckBoxShowVector_CheckedChanged(object sender, EventArgs e)
+        {
+            showVector = checkBoxShowVector.Checked;
+        }
+
+        private void CheckBoxShowFrame_CheckedChanged(object sender, EventArgs e)
+        {
+            showFrame = checkBoxShowFrame.Checked;
         }
 
         private void TrackBarTimeScale_ValueChanged(object sender, EventArgs e)
@@ -81,11 +119,6 @@ namespace BallsModelDrawer
 
             timeScale = val2;
             labelTimeScale.Text = string.Format("TimeScale: x{0}", Math.Round(val2, 2));
-        }
-
-        private void CheckBoxLightMode_CheckedChanged(object sender, EventArgs e)
-        {
-            lightMode = checkBoxLightMode.Checked;
         }
 
         private void printState()
@@ -274,8 +307,8 @@ namespace BallsModelDrawer
                     {
                         new BallsModel.Point(20.0, 20.0),
                         new BallsModel.Point(30.0, 15.0),
-                        new BallsModel.Point(24.0, 30.0),
-                        new BallsModel.Point(14.0, 13.0),
+                        new BallsModel.Point(35.0, 30.0),
+                        new BallsModel.Point(25.0, 33.0),
                     },
                     wallWeight,
                     FSharpOption<Guid>.None
@@ -313,6 +346,7 @@ namespace BallsModelDrawer
             stopWatch.Start();
 
             lastRealTime = (double)stopWatch.ElapsedMilliseconds / 1000;
+            lastSimTime = lastRealTime;
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -328,8 +362,14 @@ namespace BallsModelDrawer
                     else
                         WindowState = FormWindowState.Maximized;
                     break;
-                case Keys.T:
-                    lightMode = !lightMode;
+                case Keys.V:
+                    showVector = !showVector;
+                    break;
+                case Keys.C:
+                    showCenter = !showCenter;
+                    break;
+                case Keys.B:
+                    showFrame = !showFrame;
                     break;
                 case Keys.Space:
                     if (newWallBuffer.Count < 3)
@@ -439,7 +479,16 @@ namespace BallsModelDrawer
             if (frameDurationBuffer.Count > 55)
                 frameDurationBuffer.RemoveAt(0);
 
-            StateDrawer.Draw(g, currentState, simTime, scaleModel, scaleVectors, lightMode);
+            StateDrawer.Draw(
+                g, 
+                currentState, 
+                simTime, 
+                scaleModel, 
+                scaleVectors, 
+                showCenter, 
+                showFrame, 
+                showVector
+            );
         }
     }    
 }

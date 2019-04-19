@@ -16,7 +16,9 @@ namespace BallsModelDrawer
             double time,
             float scale = 1, 
             float scaleVectors = 1,
-            bool lightMode = true
+            bool showCenter = true,
+            bool showFrame = false,
+            bool showVector = true
         )
         {
             Pen wallPen = new Pen(Color.Black, 3f);
@@ -61,16 +63,21 @@ namespace BallsModelDrawer
                 float x = (float)(currentX * scale);
                 float y = (float)(currentY * scale);
 
-                if (lightMode)
+                if (showCenter)
                 {
                     float cr = scale / 2;
                     g.DrawRectangle(ballPen, x - cr / 2, y - cr / 2, cr, cr);
                 }
-                else
+
+                if (showFrame)
                 {
                     // draw circle
                     g.DrawEllipse(ballPen, x - r / 2, y - r / 2, r, r);
 
+                }
+
+                if (showVector)
+                {
                     // draw speed vector
                     float dx = (float)ball.ph.speed.dx * scaleVectors;
                     float dy = (float)ball.ph.speed.dy * scaleVectors;
@@ -84,7 +91,7 @@ namespace BallsModelDrawer
                         10,
                         10
                     );
-                }                
+                }                    
             }
 
         }
