@@ -9,8 +9,8 @@ namespace BallsModelDrawer
 {
     public class Room
     {
-        BallsModel.State currentState;
-        List<BallsModel.State> statesBuffer = new List<BallsModel.State>();
+        public BallsModel.State currentState;
+        public List<BallsModel.State> statesBuffer = new List<BallsModel.State>();
         public bool solved = false;
        
         public Room(BallsModel.State initialState)
@@ -23,7 +23,7 @@ namespace BallsModelDrawer
             BallsModel.State latestState = 
                 statesBuffer.Count > 0 ? statesBuffer.Last() : currentState;
 
-            FSharpOption <BallsModel.State> state = latestState.nextState;
+            FSharpOption <BallsModel.State> state = latestState.nextState(FSharpOption<double>.None);
             solved = FSharpOption<BallsModel.State>.get_IsNone(state);
 
             if (!solved)
